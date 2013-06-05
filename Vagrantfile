@@ -10,7 +10,10 @@ Vagrant::Config.run do |config|
   puppetmaster_ip = '192.168.33.10'
 
   config.vm.define :puppetmaster do |puppetmaster_config|
-    puppetmaster_config.vm.customize ["modifyvm", :id, "--memory", 2048]
+    puppetmaster_config.vm.customize ["modifyvm", :id,
+                                      "--memory", "1500",
+                                      "--cpus", "2",
+                                      "--ioapic", "on"] # needed on F19 w/ core i7-3667U
     puppetmaster_config.vm.box = "centos-puppetmaster"
     puppetmaster_config.vm.network :hostonly, puppetmaster_ip
 
@@ -47,7 +50,10 @@ Vagrant::Config.run do |config|
     # which appears to be our default coarse of action
     disable_se_linux = true
     node.vm.box = "moz-rhel-6.4"
-    node.vm.customize ["modifyvm", :id, "--memory", 2048]
+    node.vm.customize ["modifyvm", :id,
+                       "--memory", "1024",
+                       "--cpus", "2",
+                       "--ioapic", "on"]
     node.vm.host_name = system_hostname
     #
     # You might want to uncomment this for debugging
