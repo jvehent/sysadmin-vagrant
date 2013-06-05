@@ -3,10 +3,7 @@
 
 Vagrant::Config.run do |config|
   # This is the path to trunk of the sysamins svn puppet repo
-  # I've left my path here as an exmaple, but you will need to
-  # update this for your local system
-  
-  puppet_base_path = '/Users/jabba/svn/puppet/trunk'
+  puppet_base_path = '~/svn/sysadmins/puppet/trunk'
   puppet_path = '/etc/puppet'
   # The ipaddress of the host only network adapter
   # This is probably fine to be left as is
@@ -24,7 +21,7 @@ Vagrant::Config.run do |config|
     enc_classes << 'base::puppetclient'
     enc_classes << 'vagrantenv'
     enc_classes.each do |enc_class|
-    puppetmaster_config.vm.provision :shell,
+      puppetmaster_config.vm.provision :shell,
         :inline => "echo \"#{enc_class}\" >> /tmp/puppet_classes.txt"
     end
     puppetmaster_config.vm.share_folder "hiera", "#{puppet_path}/hiera", "#{puppet_base_path}/hiera"
@@ -35,10 +32,12 @@ Vagrant::Config.run do |config|
     puppetmaster_config.vm.share_folder "puppetmasterd", "#{puppet_path}/puppetmasterd", "#{puppet_base_path}/puppetmasterd"
     puppetmaster_config.vm.share_folder "trunk", "/trunk", "#{puppet_base_path}"
 
-    # Need to write a script here to check for the existance of this file and
+    # Need to write a script here to check for the existence of this file and
     # This will fail if you do a vagrant reload puppetmaster
-    puppetmaster_config.vm.provision :shell, :inline => "test -e #{puppet_path}/hiera.yaml || ln -s /trunk/hiera.yaml #{puppet_path}/hiera.yaml"
-    puppetmaster_config.vm.provision :shell, :inline => "cp /vagrant/site.pp /etc/puppet/manifests/"
+    puppetmaster_config.vm.provision :shell,
+      :inline => "test -e #{puppet_path}/hiera.yaml || ln -s /trunk/hiera.yaml #{puppet_path}/hiera.yaml"
+    puppetmaster_config.vm.provision :shell,
+      :inline => "cp /vagrant/site.pp /etc/puppet/manifests/"
   end
 
   config.vm.define :node do |node|
@@ -54,7 +53,7 @@ Vagrant::Config.run do |config|
     # You might want to uncomment this for debugging
     #node.vm.boot_mode = :gui
     #
-    # This is the itnerface that the node actually talks
+    # This is the interface that the node actually talks
     # to the puppetmaster on. It needs to be in the same
     # subnet as puppetmaster_ip
     node.vm.network :hostonly, "192.168.33.11"
