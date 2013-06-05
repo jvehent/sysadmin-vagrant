@@ -27,12 +27,13 @@ Vagrant::Config.run do |config|
       puppetmaster_config.vm.provision :shell,
         :inline => "echo \"#{enc_class}\" >> /tmp/puppet_classes.txt"
     end
-    puppetmaster_config.vm.share_folder "hiera", "#{puppet_path}/hiera", "#{puppet_base_path}/hiera"
-    puppetmaster_config.vm.share_folder "bin", "#{puppet_path}/bin", "#{puppet_base_path}/bin"
-    puppetmaster_config.vm.share_folder "files", "#{puppet_path}/files", "#{puppet_base_path}/files"
-    puppetmaster_config.vm.share_folder "modules", "#{puppet_path}/modules", "#{puppet_base_path}/modules"
-    puppetmaster_config.vm.share_folder "vagrant_modules", "#{puppet_path}/vagrant_modules", "#{puppet_base_path}/vagrant_modules"
-    puppetmaster_config.vm.share_folder "puppetmasterd", "#{puppet_path}/puppetmasterd", "#{puppet_base_path}/puppetmasterd"
+    # mount shared folders
+    ["hiera", "bin", "files", "modules", "vagrant_modules",
+     "puppetmasterd"].each do |sharename|
+      puppetmaster_config.vm.share_folder sharename,
+                                          "#{puppet_path}/#{sharename}",
+                                          "#{puppet_base_path}/#{sharename}"
+    end
     puppetmaster_config.vm.share_folder "trunk", "/trunk", "#{puppet_base_path}"
 
     # Need to write a script here to check for the existence of this file and
