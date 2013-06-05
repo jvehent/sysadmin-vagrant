@@ -1,0 +1,24 @@
+| SYSADMIN VAGRANT |
+
+To download the Vagrant Boxes and files:
+
+1. grab a copy of the credentials file in the format
+
+    user <some username>
+    password <some password>
+    location <http://some location>
+
+2. run:
+
+    $ ./sysadmin-vagrant-dl.sh
+
+3. wait a little
+
+4. start the VMs with
+
+    $ vagrant up puppetmaster
+    $ vagrant up node
+
+Requirements:
+  - Vagrant 1.2+
+  - Virtualbox 4+
