@@ -35,7 +35,10 @@ Vagrant::Config.run do |config|
                                           "#{puppet_base_path}/#{sharename}"
     end
     puppetmaster_config.vm.share_folder "trunk", "/trunk", "#{puppet_base_path}"
-
+    # specific to work in progress: puppet-autossec
+    puppetmaster_config.vm.share_folder "puppet-autossec",
+                                        "#{puppet_path}/modules/puppet-autossec",
+                                        "/home/ulfr/Code/puppet-autossec"
     # Need to write a script here to check for the existence of this file and
     # This will fail if you do a vagrant reload puppetmaster
     puppetmaster_config.vm.provision :shell,
