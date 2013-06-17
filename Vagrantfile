@@ -13,7 +13,7 @@ Vagrant::Config.run do |config|
     puppetmaster_config.vm.customize ["modifyvm", :id,
                                       "--memory", "1500",
                                       "--cpus", "2",
-                                      "--ioapic", "on"] # needed on F19 w/ core i7-3667U
+                                      "--ioapic", "on"] # fix perf issue on F19
     puppetmaster_config.vm.box = "centos-puppetmaster"
     puppetmaster_config.vm.network :hostonly, puppetmaster_ip
 
@@ -39,9 +39,12 @@ Vagrant::Config.run do |config|
     # Need to write a script here to check for the existence of this file and
     # This will fail if you do a vagrant reload puppetmaster
     puppetmaster_config.vm.provision :shell,
-      :inline => "test -e #{puppet_path}/hiera.yaml || ln -s /trunk/hiera.yaml #{puppet_path}/hiera.yaml"
+      :inline => "if [ ! -h #{puppet_path}/hiera.yaml ]; then " +
+                 "rm #{puppet_path}/hiera.yaml; " +
+                 "ln -s /trunk/hiera.yaml #{puppet_path}/hiera.yaml; fi"
     puppetmaster_config.vm.provision :shell,
-      :inline => "cp /vagrant/site.pp /etc/puppet/manifests/"
+      :inline => "if [ ! -e /etc/puppet/manifests/site.pp ]; then " +
+                 "cp /vagrant/site.pp /etc/puppet/manifests/; fi"
   end
 
   config.vm.define :node do |node|
